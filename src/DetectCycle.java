@@ -15,11 +15,11 @@ public class DetectCycle {
     Do not modify the linked list.
  */
     public ListNode detectCycle(ListNode head) {
-        HashSet<ListNode> nodeMap = new HashSet<ListNode>(); // Store unique items.
+        HashSet<ListNode> nodeHash = new HashSet<ListNode>(); // Store unique items.
         while(head != null){ // Iterate
-            nodeMap.add(head);
+            nodeHash.add(head);
             head=head.next;
-            if(nodeMap.contains(head))
+            if(nodeHash.contains(head))
                 return head; // Return if head has already been visited in the linked list.
         }
         return null; // Return null if no duplicates found.
