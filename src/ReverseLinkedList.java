@@ -1,4 +1,7 @@
 import helper.ListNode;
+/*
+    Given the head of a singly linked list, reverse the list, and return the reversed list.
+ */
 public class ReverseLinkedList {
     public ListNode reverseList(ListNode head) {
         ListNode previous = null; // null terminates the newly reversed linked list
