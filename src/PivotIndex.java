@@ -1,6 +1,7 @@
 public class PivotIndex {
     public int pivotIndex(int[] nums) {
         /*
+            https://leetcode.com/study-plan/leetcode-75/?progress=xdlhlco7 Level 1
             Given an array of integers nums, calculate the pivot index of this array.
 
             The pivot index is the index where the sum of all the numbers strictly to the left of the index is equal

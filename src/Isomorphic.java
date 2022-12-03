@@ -2,6 +2,7 @@ import java.util.HashMap;
 
 public class Isomorphic {
     /*
+    https://leetcode.com/study-plan/leetcode-75/?progress=xdlhlco7 Level 1
     Given two strings s and t, determine if they are isomorphic.
 
     Two strings s and t are isomorphic if the characters in s can be replaced to get t.

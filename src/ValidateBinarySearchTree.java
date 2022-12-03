@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 public class ValidateBinarySearchTree {
     /*
+    https://leetcode.com/study-plan/leetcode-75/?progress=xdlhlco7 Level 1
     Given the root of a binary tree, determine if it is a valid binary search tree (BST).
 
     A valid BST is defined as follows:

@@ -1,5 +1,6 @@
 public class MaxProfit {
     /*
+    https://leetcode.com/study-plan/leetcode-75/?progress=xdlhlco7 Level 1
     You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
     You want to maximize your profit by choosing a single day to buy one stock and choosing a different

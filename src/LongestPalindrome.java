@@ -3,6 +3,7 @@ import java.util.Map;
 
 public class LongestPalindrome {
     /*
+    https://leetcode.com/study-plan/leetcode-75/?progress=xdlhlco7 Level 1
     Given a string s which consists of lowercase or uppercase letters, return the length of the longest
     palindrome that can be built with those letters.
 

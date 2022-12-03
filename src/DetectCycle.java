@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DetectCycle {
-/*    Given the head of a linked list, return the node where the cycle begins.
+/*
+    https://leetcode.com/study-plan/leetcode-75/?progress=xdlhlco7 Level 1
+    Given the head of a linked list, return the node where the cycle begins.
         If there is no cycle, return null.
 
     There is a cycle in a linked list if there is some node in the list that can be reached again
