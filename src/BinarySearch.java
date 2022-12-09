@@ -35,8 +35,8 @@ public class BinarySearch {
         int lo = 0, hi = nums.length-1;
         while(lo<hi){
             // if the array is even, we could choose the lower or upper index as our midpoint.
-            // upper mid: (hi+lo+1)/2,    mid = lo + (Math.floor(hi-lo+1)/2)
-            // lower mid: (hi+lo)/2       mid = lo + (Math.floor(hi-lo)/2)
+            // upper mid: lo+(hi-lo+1)/2,    mid = lo + (Math.floor(hi-lo+1)/2)
+            // lower mid: low+(hi-lo)/2       mid = lo + (Math.floor(hi-lo)/2)
             int mid = (hi+lo+1)/2;
 
             // comparing target to mid will determine which side of the range our match could be located.

@@ -25,7 +25,7 @@ public class SubSequence {
 
             t = t.substring(t.indexOf(current)+1);
 
-            if(s.length()-(i)>t.length() || t.indexOf(next)==-1)
+            if(s.length()-i>t.length() || t.indexOf(next)==-1)
                 return false;
         }
 

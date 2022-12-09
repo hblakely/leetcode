@@ -30,7 +30,7 @@ public class FirstBadVersion {
      */
 
     public static int firstBadVersion(int n) {
-        // First though is a search function would be good, but we're not just matching a single target.
+        // First thought is a search function would be good, but we're not just matching a single target.
         // We're matching a target that has two parts.
         // isBadVersion(n) must be adjacent isBadVersion(n+1)
         // The exception to this would be if the very first version is bad. Then there were never any good versions.
