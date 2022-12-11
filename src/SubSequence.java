@@ -28,7 +28,6 @@ public class SubSequence {
             if(t.indexOf(next)==-1)
                 return false;
         }
-
         return true;
     }
 }
