@@ -64,7 +64,7 @@ public class SentenceSImilarity {
             if (sentence1.length ==0) // sentence1 and 2 can both be empty and still be considered similar.
                 return similar;
             for(int i = 0; i<sentence1.length; i++){
-                // I had originally thought to make everything lowercase for comparisons, but it didn't seem tp matter.
+                // I had originally thought to make everything lowercase for comparisons, but it didn't seem to matter.
                 // Therefor I optimized for their test cases.
                 if(sentence1[i].equals(sentence2[i])) // Skip calculation if the words are the same.
                     continue;
