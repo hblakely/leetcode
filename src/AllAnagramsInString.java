@@ -180,8 +180,7 @@ public class AllAnagramsInString {
     /**
      * Reduce the size of int[] to 26
      */
-    // 8ms, 43.1mb - seems to be basically the same as above,
-    // just a smaller array. More logic too... I like above.
+    // 8ms, 43.1mb - basically the same as above,
     public List<Integer> findAnagramsSmallerIntArray(String s, String p) {
         int ns = s.length(), np = p.length();
         if (ns < np) return new ArrayList();
