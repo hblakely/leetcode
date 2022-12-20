@@ -20,6 +20,7 @@ public class Isomorphic {
      */
 
     // First attempt, HashMap single loop.
+    // This works fine, just a little slower than mapping ascii characters using an int[].
     public static boolean isIsomorphicHash(String s, String t) {  // 31ms, 42mb leetcode.com
         boolean isIsomorphic = true;
         Map<Character, Character> sMap = new HashMap<>();
@@ -40,7 +41,8 @@ public class Isomorphic {
         return isIsomorphic;
     }
 
-
+    // This is the preferred method for its speed.
+    // Basically the same memory usage as HashMap.
     public static boolean isIsomorphic(String s, String t) { // 7ms, 43.2mb
         boolean isIsomorphic = true;
         int[] sMap = new int[256], tMap = new int[256];
