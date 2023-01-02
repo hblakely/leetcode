@@ -9,6 +9,13 @@ public class AddTwoNumbers {
     You may assume the two numbers do not contain any leading zero, except the number 0 itself.
 
 
+    Follow up
+
+    What if the the digits in the linked list are stored in non-reversed order? For example:
+
+    (3→4→2)+(4→6→5)=8→0→7(3 \to 4 \to 2) + (4 \to 6 \to 5) = 8 \to 0 \to 7(3→4→2)+(4→6→5)=8→0→7
+
+    ANSWER TO FOLLOW UP: Same as normal, but reverse the lists first, and then reverse the answer.
      */
     public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode start = null, current = null, next = null;
