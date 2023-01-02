@@ -17,7 +17,7 @@ public class PivotIndex {
      * @param nums
      * @return
      */
-    public int pivotIndexSolution(int[] nums) {
+    public static int pivotIndexSolution(int[] nums) {
         int sum = 0, leftsum = 0;
         for (int x: nums) sum += x;
         for (int i = 0; i < nums.length; ++i) {
@@ -86,5 +86,36 @@ public class PivotIndex {
             }
         }
         return pivot_index;
+    }
+
+    public static void main(String[] args){
+        example1();
+        example2();
+    }
+
+    /**
+     * Input: nums = [1,7,3,6,5,6]
+     * Output: 3
+     * Explanation:
+     * The pivot index is 3.
+     * Left sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11
+     * Right sum = nums[4] + nums[5] = 5 + 6 = 11
+     */
+    private static void example1(){
+        int[] nums = {1,7,3,6,5,6};
+        System.out.println("Example2: nums = [1,7,3,6,5,6]");
+        System.out.println(pivotIndexSolution(nums));
+    }
+
+    /**
+     * Input: nums = [1,2,3]
+     * Output: -1
+     * Explanation:
+     * There is no index that satisfies the conditions in the problem statement.
+     */
+    private static void example2(){
+        int[] nums = {1,2,3};
+        System.out.println("Example1: nums = [1,2,3]");
+        System.out.println(pivotIndexSolution(nums));
     }
 }
