@@ -1,0 +1,148 @@
+733. Flood Fill
+
+An image is represented by an m x n integer grid image where image[i][j] represents the pixel value of the image.
+
+You are also given three integers sr, sc, and color. You should perform a flood fill on the image starting from the pixel image[sr][sc].
+
+To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with color.
+
+Return the modified image after performing the flood fill.
+ 
+
+Example 1:
+
+Input: image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2
+Output: [[2,2,2],[2,2,0],[2,0,1]]
+Explanation: From the center of the image with position (sr, sc) = (1, 1) (i.e., the red pixel), all pixels connected by a path of the same color as the starting pixel (i.e., the blue pixels) are colored with the new color.
+Note the bottom corner is not colored 2, because it is not 4-directionally connected to the starting pixel.
+Example 2:
+
+Input: image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, color = 0
+Output: [[0,0,0],[0,0,0]]
+Explanation: The starting pixel is already colored 0, so no changes are made to the image.
+ 
+
+Constraints:
+
+m == image.length
+n == image[i].length
+1 <= m, n <= 50
+0 <= image[i][j], color < 216
+0 <= sr < m
+0 <= sc < n
+
+
+JAVA RECURSIVE: 0 ms, 43.5 MB
+
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        int match = image[sr][sc];
+        if (match != color) // Don't recurr if it's already that color 
+            recurr(image, sr, sc, color, match);
+        
+        return image;
+    }
+
+    public void recurr(int[][] image, int r, int c, int color, int match) {
+        // End recursion if out of bounds 
+        if (r < 0 || r >= image.length || c < 0 || c >= image[0].length)
+            return;
+        // End recursion if color isn't match
+        if (image[r][c] != match)
+            return;
+
+        image[r][c] = color;
+        recurr(image, r - 1, c, color, match); // up
+        recurr(image, r + 1, c, color, match); // down
+        recurr(image, r, c - 1, color, match); // left
+        recurr(image, r, c + 1, color, match); // right
+    }
+}
+
+
+JAVA ITERATIVE:  1 ms, 43.9 MB
+
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        int match = image[sr][sc];                  // color to match.
+        Queue<int[]> stack = new LinkedList<>();    // coordinates to fill
+        if(match!=color)                            // fill if not filled
+            stack.add(new int[]{sr,sc});
+        
+        while(!stack.isEmpty()){
+            int[] rc = stack.poll();                        // get current coordinate
+            if(image[rc[0]][rc[1]]==match){                 // fill if match
+                image[rc[0]][rc[1]]=color;
+                if((rc[0]-1)>=0)                            // up
+                    stack.add(new int[]{rc[0]-1,rc[1]});
+                if((rc[0]+1)<image.length)                  // down 
+                    stack.add(new int[]{rc[0]+1,rc[1]});
+                if((rc[1]-1)>=0)                            // left 
+                    stack.add(new int[]{rc[0],rc[1]-1});
+                if((rc[1]+1)<image[0].length)               // right
+                    stack.add(new int[]{rc[0],rc[1]+1});
+            }
+        }
+        return image;
+    }
+}
+
+
+PYTHON RECURSIVE: 50 ms, 13.3 MB
+
+class Solution(object):
+    def floodFill(self, image, sr, sc, color):
+        """
+        :type image: List[List[int]]
+        :type sr: int
+        :type sc: int
+        :type color: int
+        :rtype: List[List[int]]
+        """
+        match = image[sr][sc]
+        if match!=color:
+            self.recurr(image,sr,sc,color,match)
+        return image
+
+    def recurr(self,image,sr,sc,color,match):
+        # END RECURSION
+        if sr>=len(image) or sr<0 or sc>=len(image[0]) or sc<0: # OOB
+            return
+        
+        if image[sr][sc]!=match: # nothing to fill
+            return 
+        image[sr][sc]=color
+        self.recurr(image,sr-1,sc,color,match)  # up
+        self.recurr(image,sr+1,sc,color,match)  # down
+        self.recurr(image,sr,sc-1,color,match)  # left
+        self.recurr(image,sr,sc+1,color,match)  # right
+
+PYTHON ITERATIVE: 63 ms, 13.4 MB
+
+class Solution(object):
+    def floodFill(self, image, sr, sc, color):
+        """
+        :type image: List[List[int]]
+        :type sr: int
+        :type sc: int
+        :type color: int
+        :rtype: List[List[int]]
+        """
+        match = image[sr][sc]
+        stack=[]
+        if match!=color:
+            stack.append([sr,sc])
+        while stack:
+            sr,sc = stack.pop(0)
+            if image[sr][sc]==match:
+                image[sr][sc]=color
+                if sr-1>=0:
+                    stack.append([sr-1,sc]) # up
+                if sr+1<len(image):
+                    stack.append([sr+1,sc])  # down
+                if sc-1>=0:
+                    stack.append([sr,sc-1])  # left
+                if sc+1<len(image[0]):
+                    stack.append([sr,sc+1])  # right
+
+        return image

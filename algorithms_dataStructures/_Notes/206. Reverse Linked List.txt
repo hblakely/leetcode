@@ -1,0 +1,167 @@
+206. Reverse Linked List
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+
+Input: head = [1,2,3,4,5]
+Output: [5,4,3,2,1]
+
+nput: head = [1,2]
+Output: [2,1]
+Example 3:
+
+Input: head = []
+Output: []
+
+Constraints:
+The number of nodes in the list is the range [0, 5000].
+-5000 <= Node.val <= 5000
+
+
+Java Iterative: 0ms, 42.6mb
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode previous = null;
+        ListNode current = head;
+        while (current != null){
+            ListNode tempNext = current.next;
+            current.next = previous;
+            previous = current;
+            current = tempNext;
+        }
+        return previous;
+    }
+}
+
+
+C++ Iterative: 3ms, 8.2mb
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+
+        //nullptr  1->2->3->4->5->nullptr
+        //      p<-c  n
+        //nullptr<-1<-2->3->4->5->nullptr
+        //         p<-c  n
+        //nullptr<-1<-2<-3->4->5->nullptr
+        //            p<-c  n
+        //nullptr<-1<-2<-3<-4->5->nullptr
+        //               p<-c  n
+        //nullptr<-1<-2<-3<-4->5->nullptr
+        //                  p<-c  n
+        //nullptr<-1<-2<-3<-4<-5
+        //                     p  c
+
+        ListNode* previous = nullptr;
+        ListNode* current = head; 
+        while(current != nullptr){
+            ListNode* next = current->next;
+            current->next = previous;
+            previous = current;
+            current = next;             
+        }
+        return previous;
+    }
+};
+
+
+Python Iterative: 28 ms, 15.2mb
+
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution(object):
+    def reverseList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        """ return if no elements : fail early, fail often """
+        if head is None or head.next is None:
+            return head
+
+        previous = None
+        while head:
+            current = head
+            head = head.next
+            current.next = previous
+            previous = current
+            
+        return current
+
+
+
+JavaScript Recursion: 68ms, 45mb
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function(head) {
+    return recurr(null,head);
+};
+
+var recurr = function (prev,curr){
+    // End recursion
+    if(curr==null)
+        return prev;
+
+    // advance pointer
+    var next = curr.next; 
+    curr.next = prev;   
+    return recurr(curr,next);
+};
+
+
+JavaScript Iterative: 62ms, 44.7mb
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function(head) {
+    var prev = null;
+    var curr = head;
+    while (curr!=null){
+        // advance pointer
+        var next = curr.next; 
+        curr.next = prev;
+        prev = curr;
+        curr = next;   
+    }
+    return prev;
+};

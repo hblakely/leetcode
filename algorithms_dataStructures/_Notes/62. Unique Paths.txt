@@ -1,0 +1,88 @@
+62. Unique Paths
+
+There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.
+
+Given the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.
+
+The test cases are generated so that the answer will be less than or equal to 2 * 109.
+
+ 
+
+Example 1:
+
+
+Input: m = 3, n = 7
+Output: 28
+Example 2:
+
+Input: m = 3, n = 2
+Output: 3
+Explanation: From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:
+1. Right -> Down -> Down
+2. Down -> Down -> Right
+3. Down -> Right -> Down
+ 
+
+Constraints:
+
+1 <= m, n <= 100
+
+Java Iterative: 0 ms, 39.4 MB
+
+class Solution {
+    public static int uniquePaths(int m, int n) {
+        // This is an example of Dynamic programming, where we store previous calculations
+        // to prevent calculating multiple times. 
+        // m is num rows, n is num columns.
+        int[][] grid = new int[m][n]; // Use 2D array memo. Initializes values to 0.
+        // you can only reach a location from the left or the top, because the robot can only move
+        // right or down. 
+                            
+        // number of paths to reach current cell is equal to left-cell + up-cell. 
+        for(int r = 0; r<m; r++){ // iterate through rows.
+            for(int c = 0; c<n; c++){ 
+                if(r==0&&c==0) 
+                    grid[r][c]=1; // first cell is 1.
+                else{
+                    int left = c<1?0:grid[r][c-1];
+                    int up = r<1?0:grid[r-1][c];
+                    grid[r][c]= left+up;
+                }
+            }
+        }
+        return grid[m-1][n-1]; // cumulative paths stored in last cell
+    }
+}
+
+
+Java Recursion: Doesn't pass time requirements, but is a good understanding starting point.
+
+class Solution {
+    public static int uniquePaths(int m, int n) {
+        if(m==1 || n ==1) // first column, and first row will always have only 1 path. 
+            return 1;
+        return uniquePaths(m-1,n)+uniquePaths(m,n-1);
+    }
+}
+
+
+PYTHON iterative 2D grid memo: 15ms, 13.5mb
+
+class Solution(object):
+    def uniquePaths(self, m, n):
+        # multidimensional array size = m*n initialized values of 1. 
+        grid =[[1]* n for _ in range(m)] # use _ because we don't need to reference index.
+        for row in range(1,m): # first row, and first column will always be 1 path. 
+            for col in range(1,n):
+                grid[row][col] = grid[row][col-1] + grid[row-1][col]
+        
+        return grid[m-1][n-1] # last cell in grid stores cumulative paths. 
+
+
+PYTHON 3 FACTORIAL COMBINATORICS: 36ms, 16.2mb
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        return factorial(m+n -2) // factorial(n-1) // factorial(m-1)
+
+
+

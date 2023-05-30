@@ -1,0 +1,19 @@
+# Write your MySQL query statement below
+CREATE FUNCTION name_of_function(var_name INT)
+BEGIN 
+  # Some logic to manipulate Vars...
+  # set var_name = var_name - 1;
+  # Declare NTH INT;
+  # set NTH = var_name -1;
+  RETURN(
+    SELECT
+      IFNULL(
+        (SELECT
+        FROM
+        WHERE
+        ORDER BY COLUMN_NAME DESC
+        LIMIT NUM_RECORDS OFFSET NTH),
+        NULL
+      ) AS SOME_ALIAS
+  );
+END

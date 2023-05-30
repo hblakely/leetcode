@@ -1,0 +1,229 @@
+392. Is Subsequence
+
+Given two strings s and t, return true if s is a subsequence of t, or false otherwise.
+
+A subsequence of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
+
+ 
+
+Example 1:
+
+Input: s = "abc", t = "ahbgdc"
+Output: true
+Example 2:
+
+Input: s = "axc", t = "ahbgdc"
+Output: false
+ 
+
+Constraints:
+
+0 <= s.length <= 100
+0 <= t.length <= 104
+s and t consist only of lowercase English letters.
+
+
+// My Java:
+// FIRST ATTEMPT using substring:
+class Solution {
+    public boolean isSubsequence(String s, String t) {
+        // "" and "" should return true
+        // Fail Early, Fail Often
+        if(s == null || t == null || s.length()>t.length())
+            return false;
+        
+        // Iterate through characters of s, searching in t
+        for(int i = 0; i<s.length(); i++){
+            char sChar = s.charAt(i);
+            int tIndex = t.indexOf(sChar);
+            if(tIndex < 0) // indexOf returns -1 if not found.
+                return false; // Current char of s isn't in t.
+            else if (tIndex<=t.length()-1)
+                t = t.substring(tIndex+1); // chop already searched.
+        }
+
+        return true; // s is a subsequence of t
+    }
+}
+
+
+// TWO POINTERS with charArray JAVA
+    public boolean isSubsequence(String s, String t) {
+        // 1 ms code beat 53% 
+        // int si=0;
+        // if(s.length()<1)
+        //     return true;
+        // for(int i=0;i<t.length();i++){
+        //     if(s.charAt(si)==t.charAt(i))
+        //         si++;
+
+        //     if(si==s.length())
+        //         return true;
+        // }
+
+
+    // 1 ms beat 100
+    int i=0,j=0;
+    int n=t.length();
+    int m=s.length();
+    char ss[]=s.toCharArray();
+    char tt[]=t.toCharArray();
+
+    if(m<1)
+        return true;
+
+    while(i<n){
+        if(tt[i]==ss[j]){
+            j++;
+        }
+        i++;
+        
+    if(j==m)
+        return true;
+    }
+
+        return false;
+    }
+}
+
+
+
+
+My Python:
+FIRST ATTEMPT using two pointers
+class Solution(object):
+    def isSubsequence(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        # Fail Early, Fail Often
+        # if s or t are None we'd get errors, so exit before attempting.
+        # if s is longer than t, s cannot be a substring of t.
+        if (s is None or t is None or len(s)>len(t)):
+            return False
+
+        # "ace" is a subsequence of "abcde"
+        # "" and "" should pass given the description.
+        # Two pointers, one for current index of s, and one for ci of t.
+        tIndex = 0
+        for sIndex in range(len(s)): # iterate through s to find chars in t
+            while tIndex < len(t):
+                if(t[tIndex]==s[sIndex]):
+                    break 
+                tIndex+=1
+            if(tIndex==len(t)): # current sChar not found in t
+                return False;
+            tIndex+=1 # accounts for breaking before incrementing when found.
+        return True # s is subsequence of t
+
+PYTHON 3 
+
+FIRST ATTEMPT:
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        if len(s) > len(t):return False
+        if len(s) == 0:return True
+        subsequence=0
+        for i in range(0,len(t)):
+            if subsequence <= len(s) -1:
+                print(s[subsequence])
+                if s[subsequence]==t[i]:
+
+                    subsequence+=1
+        return  subsequence == len(s) 
+
+
+SECOND ATTEMPT, Simplified logic, loop through t, increment s-counter if found, fail if s-counter != length of s.
+
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        j = 0
+        for i in range(len(t)):
+            if j < len(s) and t[i] == s[j]:
+                j += 1
+        if j != len(s):
+            return False
+        return True
+
+
+
+JavaScript:
+FIRST ATTEMPT, two pointers
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isSubsequence = function(s, t) {
+    //############# Start Fail Early ##################
+    // we could always add exception handling for nulls and other bad input,
+    // but that's a bit overkill for this test-scenario. Instead we'll return
+    // false.
+    if(s==null || t == null || s.length > t.length) 
+        return false;
+
+    // No need to loop when "" is a substring of everything.
+    if(s.length == 0) 
+        return true; 
+    //############# End Fail Early ##################
+
+    // ########### Start ITERATE #####################
+    // We're using two pointers to progress through both strings
+    // in one pass to reduce time complexity.
+    let j = 0
+    for (let i = 0; i< t.length; i++){
+        if(s[j]==t[i])
+            j++; // matched current tChar to current sChar: iterate through s.
+        if(j==s.length)
+            return true; // found all sChars in order within t
+    }
+    // ########### End ITERATE #####################
+    return false; // Didn't find all of sChars in order inside of t.
+};
+
+
+
+C++:
+FIRST ATTEMPT using two pointers. 100% BEATS 0ms
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        // Ensure that t is at least as long as s
+        if(s.length() > t.length()) return false;
+        // exit sucessfully if s == "", it is a substring for any valid string.
+        if (s.empty()) return true;
+        // iterate using a pointer for s and a pointer for t
+        int sIndex = 0;
+        for(int tIndex = 0; tIndex<t.length(); tIndex++){
+            if(s[sIndex] == t[tIndex]) // found sChar in t. increment sIndex.
+                sIndex++;
+            if(sIndex == s.length())  // found all sChars in order within t.
+                return true;        // s is a subsequence of t.
+        }
+        return false; // s is not a substring of t.
+    }
+};
+
+RECURSIVE + Substring 34ms 0% BEATS
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        if (s.size() == 0) {
+            return true;
+        }
+        if (s.size() > t.size()) {
+            return false;
+        }
+        if (s[0] == t[0]) {
+            return isSubsequence(s.substr(1), t.substr(1));
+        }
+        // else {
+            return isSubsequence(s, t.substr(1));
+        // }
+    }
+};
+
+
+

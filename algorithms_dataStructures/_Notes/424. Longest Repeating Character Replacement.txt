@@ -1,0 +1,79 @@
+424. Longest Repeating Character Replacement
+
+You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times.
+
+Return the length of the longest substring containing the same letter you can get after performing the above operations.
+
+ 
+
+Example 1:
+
+Input: s = "ABAB", k = 2
+Output: 4
+Explanation: Replace the two 'A's with two 'B's or vice versa.
+Example 2:
+
+Input: s = "AABABBA", k = 1
+Output: 4
+Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+The substring "BBBB" has the longest repeating letters, which is 4.
+There may exists other ways to achive this answer too.
+ 
+
+Constraints:
+
+1 <= s.length <= 105
+s consists of only uppercase English letters.
+0 <= k <= s.length
+
+JAVA Iterative, Sliding Window Fast (window size never decreases): 9 ms, 42.7 MB 
+Time O(n), Space O(m) where m is 26 (uppercase English letters)
+
+class Solution {
+    public int characterReplacement(String s, int k) {
+        // Constraints s length > = 1 so no need for empty check
+        // 0 <= k <= s.length so max number of replacements is size of s. 
+        // s consists of uppcase chars only, so no need to validate chars.
+        // This is a sliding window problem, but it's a window of adjustable length
+        // increase window size until mode+k = len
+        int len = 0; // longest substring containing same char adfter k substitutions.
+        int[] window = new int[26];
+        int mode = 0; // greatest occurrence of a single char within window. 
+        int start = 0; // start index of window. 
+        for (int end = 0; end<s.length(); end++){ // end index of window.  
+            int c = s.charAt(end) - 'A'; 
+            window[c]+=1;
+            mode=Math.max(mode,window[c]);
+            boolean validWindow = (end + 1 - start - mode <= k);
+            if (!validWindow){
+                int charToRemove = s.charAt(start) - 'A';
+                window[charToRemove]-=1;
+                start++;
+            }
+            len = end + 1 - start;
+        }
+        return len;
+    }
+}
+
+
+PYTHON iterative sliding window fast: 66 ms, 13.5 MB
+
+class Solution(object):
+    def characterReplacement(self, s, k):
+        window = [0 for _ in range(26)]
+        start, mode, longest = 0,0,0
+        
+        for end in range(len(s)):
+            c = ord(s[end]) - ord('A') # ord returns int representation of unicode.
+            window[c]+=1
+            mode = max(mode, window[c])
+
+            if end+1 - start - mode > k: # invalid window
+                c = ord(s[start]) - ord('A') 
+                window[c]-=1
+                start += 1
+
+            longest = end+1 - start
+
+        return longest

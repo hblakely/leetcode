@@ -1,0 +1,210 @@
+692. Top K Frequent Words
+
+Given an array of strings words and an integer k, return the k most frequent strings.
+
+Return the answer sorted by the frequency from highest to lowest. Sort the words with the same frequency by their lexicographical order.
+
+ 
+
+Example 1:
+
+Input: words = ["i","love","leetcode","i","love","coding"], k = 2
+Output: ["i","love"]
+Explanation: "i" and "love" are the two most frequent words.
+Note that "i" comes before "love" due to a lower alphabetical order.
+Example 2:
+
+Input: words = ["the","day","is","sunny","the","the","the","sunny","is","is"], k = 4
+Output: ["the","is","sunny","day"]
+Explanation: "the", "is", "sunny" and "day" are the four most frequent words, with the number of occurrence being 4, 3, 2 and 1 respectively.
+ 
+
+Constraints:
+
+1 <= words.length <= 500
+1 <= words[i].length <= 10
+words[i] consists of lowercase English letters.
+k is in the range [1, The number of unique words[i]]
+ 
+
+Follow-up: Could you solve it in O(n log(k)) time and O(n) extra space?
+
+
+Java First try, Maps: 6 ms, 42.8 MB
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        // String to occurrence
+        Map<String, Integer> occurrences = new HashMap<>();
+        int max = 1;
+        for(String s:words){ 
+            if(occurrences.containsKey(s)){
+                int num = occurrences.get(s)+1;
+                max = Math.max(max,num);
+                occurrences.put(s,num);
+            }else
+                occurrences.put(s,1);
+        }
+        int[] nums = new int[max+1];
+        // frequency to strings
+        Map<Integer,List<String>> frequent = new HashMap<>();
+        for(String key: occurrences.keySet()){
+            int occurrence = occurrences.get(key);
+            nums[occurrence]+=1;
+            List<String> strings;
+            if(frequent.containsKey(occurrence)){
+                strings = frequent.get(occurrence);
+                strings.add(key);
+                frequent.put(occurrence, strings);
+            }else{
+                strings = new ArrayList<>();
+                strings.add(key);
+                frequent.put(occurrence,strings);
+            }
+        }
+        // add to ordered output
+        List<String> ordered = new ArrayList<>();
+        while (k>0 && max>0){
+            if(nums[max]==0){
+                max--;
+                continue;
+            }
+            List<String> l = frequent.get(max);
+            frequent.remove(max);
+            Collections.sort(l);
+            for(int i = 0; i<l.size() && k>0; i++){
+                ordered.add(l.get(i));
+                nums[max]--;   
+                k--;
+            }
+        }
+        return ordered;
+    }
+}
+
+Java cleaned up first approach: 6ms, 43mb
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> cnt = new HashMap<>();
+        for (String word : words) {
+            cnt.put(word, cnt.getOrDefault(word, 0) + 1);
+        }
+        List<String> candidates = new ArrayList<>(cnt.keySet());
+        Collections.sort(candidates,
+                (w1, w2) -> cnt.get(w1).equals(cnt.get(w2)) ? w1.compareTo(w2) : cnt.get(w2) - cnt.get(w1));
+        return candidates.subList(0, k);
+    }
+}
+
+
+
+Java Max Heap: 5 ms, 43.1 MB
+
+class Solution {
+    class Word implements Comparable<Word> {
+        private String word;
+        private int count;
+
+        public Word(String word, int count) {
+            this.word = word;
+            this.count = count;
+        }
+
+        public int compareTo(Word other) {
+            if (this.count == other.count) {
+                return this.word.compareTo(other.word);
+            }
+            return other.count - this.count;
+        }
+    }
+
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> cnt = new HashMap<>();
+        for (String word : words) {
+            cnt.put(word, cnt.getOrDefault(word, 0) + 1);
+        }
+
+        List<Word> candidates = new ArrayList<>();
+        for (var entry : cnt.entrySet()) {
+            candidates.add(new Word(entry.getKey(), entry.getValue()));
+        }
+
+        Queue<Word> h = new PriorityQueue<>(candidates);
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            res.add(h.poll().word);
+        }
+        return res;
+
+    }
+}
+
+
+Java MaxHeap implement comprable:
+
+
+class Solution {
+    class Word implements Comparable<Word> {
+        private String word;
+        private int count;
+
+        public Word(String word, int count) {
+            this.word = word;
+            this.count = count;
+        }
+
+        public int compareTo(Word other) {
+            if (this.count == other.count) {
+                return this.word.compareTo(other.word);
+            }
+            return other.count - this.count;
+        }
+    }
+
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> cnt = new HashMap<>();
+        for (String word : words) {
+            cnt.put(word, cnt.getOrDefault(word, 0) + 1);
+        }
+
+        List<Word> candidates = new ArrayList<>();
+        for (var entry : cnt.entrySet()) {
+            candidates.add(new Word(entry.getKey(), entry.getValue()));
+        }
+
+        Queue<Word> h = new PriorityQueue<>(candidates);
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            res.add(h.poll().word);
+        }
+        return res;
+
+    }
+}
+
+
+Java MinHeap: 6 ms, 43.3 MB
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> cnt = new HashMap<>();
+        for (String word : words) {
+            cnt.put(word, cnt.getOrDefault(word, 0) + 1);
+        }
+        PriorityQueue<String> h = new PriorityQueue<>(
+                (w1, w2) -> cnt.get(w1).equals(cnt.get(w2)) ? w2.compareTo(w1) : cnt.get(w1) - cnt.get(w2));
+
+        for (String word : cnt.keySet()) {
+            h.offer(word);
+            if (h.size() > k)
+                h.poll();
+        }
+
+        List<String> res = new ArrayList<>();
+        while (!h.isEmpty())
+            res.add(h.poll());
+        Collections.reverse(res);
+        return res;
+    }
+}

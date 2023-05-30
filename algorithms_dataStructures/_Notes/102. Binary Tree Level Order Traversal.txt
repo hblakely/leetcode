@@ -1,0 +1,219 @@
+102. Binary Tree Level Order Traversal
+
+Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level). 
+
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+Output: [[3],[9,20],[15,7]]
+Example 2:
+
+Input: root = [1]
+Output: [[1]]
+Example 3:
+
+Input: root = []
+Output: []
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 2000].
+-1000 <= Node.val <= 1000
+
+
+Java Recursion: 1 ms, 43.1 MB
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        // Initialize level-order list of list of integers to be returned
+        List<List<Integer>> levels = new ArrayList<>();
+        // return before processing if root is null
+        if(root==null)
+            return levels;
+        // recurr with initial values
+        List<TreeNode>level = new ArrayList<>();
+        level.add(root);
+        return recurr(level,levels,0);
+    }
+    List<List<Integer>> recurr(List<TreeNode>level, List<List<Integer>> levels, int currLevel){
+        // End recursion logic 
+        if (level==null|| level.isEmpty())
+            return levels;
+
+        // Add new level to levels
+        levels.add(new ArrayList<Integer>());
+        List<TreeNode>nextLevel=new ArrayList<>();
+        // Append current level values 
+        for(TreeNode n : level){
+            levels.get(currLevel).add(n.val);
+            // Append children to next level
+            if(n.left !=null)
+                nextLevel.add(n.left);
+            if(n.right != null)
+                nextLevel.add(n.right);
+        }
+        // recurr with next level nodes
+        recurr(nextLevel, levels, ++currLevel);
+        return levels;
+    }
+}
+
+Java Iterative: 1 ms, 42.8 MB
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        // Initalize level order
+        List<List<Integer>> levels = new ArrayList<>();
+        // Exit before processing if root is null
+        if (root == null) return levels;
+
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(root);
+        int level = 0; 
+        while (!queue.isEmpty()){
+            // start the current level
+            levels.add(new ArrayList<Integer>());
+
+            // number of elements in the current level
+            int level_length = queue.size();
+            for(int i = 0; i< level_length; i++){
+                TreeNode node = queue.remove(); 
+
+                // fulfill the current level
+                levels.get(level).add(node.val);
+
+                // add child nodes of the current level
+                // in the queue for the next level
+                if(node.left != null)queue.add(node.left);
+                if(node.right != null)queue.add(node.right);
+            }
+            // go to next level
+            level++;
+        }
+        // output level order
+        return levels;
+    }
+}
+
+Python Recursion: 23 ms, 14.2 MB
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def levelOrder(self, root):
+        levels = []
+        self.recurr(root, levels, 0)
+        return levels
+
+    def recurr(self, node, levels, levelIndex):
+        # end recursion
+        if not node:
+            return
+        
+        # add new level if necessary
+        if len(levels) == levelIndex:
+            levels.append([])
+        
+        # add node value to the current level
+        levels[levelIndex].append(node.val)
+        
+        # process left and right children recursively
+        self.recurr(node.left, levels, levelIndex + 1)
+        self.recurr(node.right, levels, levelIndex + 1)
+
+Python Iterate: 21 ms, 13.6 MB
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def levelOrder(self, root):
+        # initialize level order return value
+        level_order = [] 
+        # nothing to process, return
+        if not root:
+            return level_order
+
+        queue=[]
+        queue.append(root)
+        level_index = 0
+        while queue:
+            # start current level
+            level_order.append([])
+            # process each node in current level
+            level_len = len(queue) # var outside of loop, queue length will change
+            for i in range(level_len):
+                node = queue.pop(0) # remove first node from queue to be processed
+                level_order[level_index].append(node.val) # append node's value to 
+                if node.left: queue.append(node.left)
+                if node.right: queue.append(node.right)
+            level_index+=1
+        
+        # output level order
+        return level_order
+
+
+Python Alternate Iteration: 20 ms, 13.8 MB
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def levelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        stack, res = [[root, 0]], []
+
+        while stack:
+            node, depth = stack.pop()
+            if node:
+                if len(res) < depth + 1:
+                    res.append([])
+                res[depth].append(node.val)
+                stack.append([node.right, depth+1])
+                stack.append([node.left, depth+1])
+        
+        return res

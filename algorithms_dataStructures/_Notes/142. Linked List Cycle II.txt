@@ -1,0 +1,205 @@
+142. Linked List Cycle II
+
+Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to (0-indexed). It is -1 if there is no cycle. Note that pos is not passed as a parameter.
+
+Example1: 
+Input: head = [3,2,0,-4], pos = 1
+Output: tail connects to node index 1
+Explanation: There is a cycle in the linked list, where tail connects to the second node.
+
+Example 2:
+
+
+Input: head = [1,2], pos = 0
+Output: tail connects to node index 0
+Explanation: There is a cycle in the linked list, where tail connects to the first node.
+Example 3:
+
+
+Input: head = [1], pos = -1
+Output: no cycle
+Explanation: There is no cycle in the linked list.
+ 
+
+Constraints:
+
+The number of the nodes in the list is in the range [0, 104].
+-105 <= Node.val <= 105
+pos is -1 or a valid index in the linked-list.
+ 
+
+Follow up: Can you solve it using O(1) (i.e. constant) memory?
+
+Do not modify the linked list.
+
+
+
+JAVA:
+
+Using HashSet: O(n) time, O(n) space
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> traversed = new HashSet<>();
+        while (head != null){
+            if(traversed.contains(head))
+                return head;
+            else
+                traversed.add(head);
+            head = head.next;
+        }
+        return head;
+    }
+}
+
+
+
+C++  Two Pointers: Time Complexity O(n), space complexity O(1). 12ms, 7.7mb
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        return getCycleStart(head);
+    }
+    
+    ListNode *getIntersection(ListNode *tortoise, ListNode *hare){
+        if(hare==nullptr)
+            return nullptr;
+        //                   1->2 
+        //                  /   |
+        //                 ^    V
+        //                /     3
+        //               /      V
+        // -3 > -2 > -1 0 <---4         
+        // Hare 2x Tortoise, only need to track hare.
+        // if we reach a null, there is no intersection.
+        while (hare != NULL && hare->next != NULL){
+            tortoise = tortoise->next;
+            hare = hare->next->next;
+            if(tortoise==hare)
+                return tortoise;
+        }
+        return nullptr; //if we get here, there was no intersection. 
+    }
+
+    ListNode *getCycleStart(ListNode *head){
+        ListNode *intersection = getIntersection(head,head);
+        if(intersection == nullptr)
+            return nullptr;
+        
+        ListNode *ptr1 = head;
+        ListNode *ptr2 = intersection;
+        while (ptr1 != ptr2){
+            ptr1 = ptr1->next;
+            ptr2 = ptr2->next;
+        }
+        return ptr1; 
+    }
+};
+
+Python: 40ms, 20.4mb
+
+class Solution(object):
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        visited = {}
+        while head:
+            if head in visited:
+                return head
+            visited[head] = True
+            head = head.next
+        return None
+
+
+
+javascript: 73ms, 45.6mb
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var detectCycle = function(head) {
+    var visited = new Set();
+    while(head!=null){
+        if(visited.has(head))
+            return head;
+        visited.add(head);
+        head=head.next;
+    }
+    return null;
+};
+
+
+Go, Two Pointers: 8ms, 3.7mb 
+(Faster and less space than C++ same implementation.)
+
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func detectCycle(head *ListNode) *ListNode {
+    return getEnter(head)
+}
+
+func getEnter(head *ListNode) *ListNode {
+    ptr1 := getIntersect(head)
+    if ptr1 == nil {
+        return nil
+    }
+    ptr2 := head
+    for ptr1 != ptr2 {
+        ptr1 = ptr1.Next
+        ptr2 = ptr2.Next
+    }
+    return ptr1
+}
+
+func getIntersect(head *ListNode) *ListNode {
+    if head == nil {
+        return nil
+    }
+    slow, fast := head, head
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next.Next
+        if slow == fast {
+            return slow
+        }
+    }
+    return nil
+}

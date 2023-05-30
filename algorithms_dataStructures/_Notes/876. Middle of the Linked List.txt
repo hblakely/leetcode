@@ -1,0 +1,210 @@
+876. Middle of the Linked List
+
+Given the head of a singly linked list, return the middle node of the linked list.
+
+If there are two middle nodes, return the second middle node.
+
+Example 1:
+
+Input: head = [1,2,3,4,5]
+Output: [3,4,5]
+Explanation: The middle node of the list is node 3.
+
+Example 2:
+
+Input: head = [1,2,3,4,5,6]
+Output: [4,5,6]
+Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one.
+
+Constraints:
+
+The number of nodes in the list is in the range [1, 100].
+1 <= Node.val <= 100
+
+JAVA Loop twice:
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode middleNode(ListNode head) {
+        int count = 0;
+        ListNode current = head;
+        while (current != null){
+            count++;
+            current = current.next;
+        }
+        for (int i =1; i<=count/2; i++){
+            head = head.next;
+        }
+        return head;
+    }
+}
+
+
+
+C++ loop once to count, then iterate to mid: 5ms, 7.1mb
+Not the most efficient, but it's linear.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* start = head;
+        int count = 0;
+        while(head!=nullptr){
+            head=head->next;
+            count++;
+        }
+        for(int i = 0; i<count/2; i++){
+            start = start->next;
+        }
+        return start;
+    }
+};
+
+
+Two pointers, one loop:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* half = head;
+        ListNode* full = head;
+        while(full!=nullptr && full->next!=nullptr){
+            full = full->next->next;
+            half = half->next;
+        }
+        return half;
+    }
+};
+
+vector (dynamically sized array of nodes): 5ms, 7.1mb
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        vector<ListNode*> nodes = {head};       // create vector of nodes.
+        while (nodes.back()->next != nullptr){  // loop til nullptr
+            nodes.push_back(nodes.back()->next);// append next node to vector
+        }
+        return nodes[nodes.size()/2];           // return middle
+    }
+};
+
+
+
+PYTHON array 17ms, 13.5mb
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution(object):
+    def middleNode(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        count = 0
+        arr=[]
+        while head:
+            arr.append(head)
+            count+=1
+            head=head.next
+
+        return arr[count/2]
+
+
+PYTHON 3 two pointers: 43ms, 16.3mb
+
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+
+c# two pointers: 85ms, 38.2mb
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int val=0, ListNode next=null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode MiddleNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+}
+
+
+JAVASCRIPT two pointers: 57ms 41.9mb
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var middleNode = function(head) {
+    let slow = fast = head;
+    while (fast != null && fast.next != null){
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return slow;
+};
+
+

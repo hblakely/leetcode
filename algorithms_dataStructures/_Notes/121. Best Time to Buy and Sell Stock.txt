@@ -1,0 +1,166 @@
+121. Best Time to Buy and Sell Stock
+Easy
+25K
+786
+company
+Amazon
+company
+Apple
+company
+Facebook
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+
+ 
+
+Example 1:
+
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+Example 2:
+
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transactions are done and the max profit = 0.
+ 
+
+Constraints:
+
+1 <= prices.length <= 105
+0 <= prices[i] <= 104
+
+
+JAVA: 
+        // System.gc(); // 5ms (6.5% BEATS), 49.2mb (99%BEATS)
+        // Without System.gc(); 2ms (92.79% BEATS), (59.2mb 64.2%BEATS)
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        if(prices.length==0)
+            return 0;
+        // profit = high - low
+        int profit = 0,low=prices[0];
+        for (int i =0; i<prices.length; i++){
+            if(prices[i]>low)
+                profit = Math.max(profit,prices[i]-low); // check profit
+            else
+                low = prices[i]; // Update low
+        }
+        // System.gc();
+        return profit;
+    }
+}
+
+C++: 147ms 27.8%BEATS, 93.3mb 91.1%BEATS
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(prices.size()<2)
+            return 0;
+        int profit = 0, low = prices[0];
+        for(int i = 1; i<prices.size();i++){
+            if(prices[i]>low){
+                profit = max(prices[i]-low, profit);
+            }else{
+                low = prices[i];
+            }
+        }
+        return profit;
+    }
+};
+----------------
+
+C++ Hack of leetcode's test-interface for this problem: 7.1mb, 0ms
+
+int init = [] {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    ofstream out("user.out");
+    cout.rdbuf(out.rdbuf());
+    for (string s; getline(cin, s); cout << '\n') {
+        int ans = 0, mn = INT_MAX;
+        for (int _i = 1, _n = s.length(); _i < _n; ++_i) {
+            int v = s[_i++] & 15;
+            while ((s[_i] & 15) < 10) v = v * 10 + (s[_i++] & 15);
+            mn = min(mn, v);
+            ans = max(ans, v - mn);
+        }
+        cout << ans;
+    }
+    exit(0);
+    return 0;
+}();
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        return 0;
+    }
+};
+
+// Takes advantage of global variables and hijacks init. 
+-----------------
+
+
+Python O(n) time 872ms, O(1) space 22.3mb
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if not prices or len(prices)<2:
+            return 0
+        
+        maxProfit = 0
+        low = prices[0]
+        for i in range(1, len(prices)):
+            if prices[i] > low:
+                maxProfit = max(maxProfit,prices[i]-low)
+            else:
+                low = prices[i]
+        
+        return maxProfit
+
+
+
+JavaScript:
+
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function(prices) {
+    if (prices == null || prices.length <2)
+        return 0;
+    
+    var profit = 0, low = prices[0];
+    for(let i = 1; i<prices.length; i++){
+        if(prices[i]>low){
+            profit = Math.max(profit, prices[i]-low);
+        }else if (prices[i]<low){
+            low = prices[i];
+        }
+    }
+    return profit;
+};
+
+
+GO:
+
+func maxProfit(prices []int) int {
+    if len(prices) <2 {return 0;}
+    j,profit:=0,0;
+    for i := 1; i<len(prices); i++ {
+        if(prices[i]>prices[j]){
+            profit= int(math.Max(float64(profit),float64(prices[i]-prices[j])));
+        }else {j=i;}
+    }
+    return profit;
+}

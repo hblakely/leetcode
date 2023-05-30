@@ -1,0 +1,172 @@
+21. Merge Two Sorted Lists
+ou are given the heads of two sorted linked lists list1 and list2.
+
+Merge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.
+
+Return the head of the merged linked list.
+
+ 
+
+Example 1:
+Input: list1 = [1,2,4], list2 = [1,3,4]
+Output: [1,1,2,3,4,4]
+Example 2:
+
+Input: list1 = [], list2 = []
+Output: []
+Example 3:
+
+Input: list1 = [], list2 = [0]
+Output: [0]
+ 
+
+Constraints:
+
+The number of nodes in both lists is in the range [0, 50].
+-100 <= Node.val <= 100
+Both list1 and list2 are sorted in non-decreasing order.
+
+
+MY JAVA:
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode sorted = new ListNode();
+        ListNode pointer = sorted; // pointer.next will refer to first item in sorted list.
+        while(list1 != null && list2 != null){
+            // compare values, append node with smaller value to sorted.
+            if(list1.val<list2.val){
+                sorted.next=list1; // append list1 node to sorted
+                list1=list1.next; // pop current from list1
+            } else{
+                sorted.next=list2; // append list2 node to sorted
+                list2=list2.next; // pop current from list2
+            }
+            sorted=sorted.next;
+        }
+        // clean up, add all leftover nodes to sorted.
+        if(list1!=null)
+            sorted.next=list1;
+        else if(list2!=null)
+            sorted.next=list2;
+        return pointer.next; 
+    }
+}
+
+
+My Python:
+
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution(object):
+    def mergeTwoLists(self, list1, list2):
+        """
+        :type list1: Optional[ListNode]
+        :type list2: Optional[ListNode]
+        :rtype: Optional[ListNode]
+        """
+        """ Initial dummy List Item to point to first ListNode """
+        # no work to do if both lists are None
+        if not(list1 or list2):
+            return None
+        # holds the newly merged list
+        merged = ListNode()
+        # pointer for first list item to be returned
+        mergedStart=merged 
+
+        # iterate through lists, comparing values and appending to merged
+        while list1 and list2:
+            # append ListNode with lower value
+            if(list1.val<list2.val): 
+                merged.next=list1 
+                list1=list1.next
+            else:
+                merged.next=list2
+                list2=list2.next
+            # progress pointer through merged node
+            merged=merged.next 
+        if list1:
+            merged.next=list1
+            merged=merged.next
+        elif list2:
+            merged.next=list2
+            merged=merged.next
+
+        return mergedStart.next # first of mergedStart is empty, .next points to first node
+
+
+My Javascript:
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} list1
+ * @param {ListNode} list2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function(list1, list2) {
+    // terminate recursion condition
+    if(list1==null)
+        return list2;
+    if(list2 == null)
+        return list1;
+    
+    // compare values and append
+    if (list1.val < list2.val) {
+        list1.next = mergeTwoLists(list1.next, list2);
+        return list1; 
+    } else {
+        list2.next = mergeTwoLists(list1, list2.next);
+        return list2;
+    }
+};
+
+My C++
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode* sorted = new ListNode();
+        ListNode* ptr = sorted;
+        while (list1 != nullptr && list2 != nullptr) {
+            if (list1->val < list2->val) {
+                ptr->next = list1;
+                list1 = list1->next;
+            } else {
+                ptr->next = list2;
+                list2 = list2->next;
+            }
+            ptr = ptr->next;
+        }
+        ptr->next = (list1 != nullptr) ? list1 : list2;
+        return sorted->next;
+    }
+};

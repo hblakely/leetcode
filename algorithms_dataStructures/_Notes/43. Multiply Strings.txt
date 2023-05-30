@@ -1,0 +1,379 @@
+43. Multiply Strings
+
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+
+Note: You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+ 
+
+Example 1:
+
+Input: num1 = "2", num2 = "3"
+Output: "6"
+Example 2:
+
+Input: num1 = "123", num2 = "456"
+Output: "56088"
+ 
+
+Constraints:
+
+1 <= num1.length, num2.length <= 200
+num1 and num2 consist of digits only.
+
+
+/*
+
+If this type of problem is new to you and you would like to practice by solving similar problems, we have provided the list below:
+
+66. Plus One
+67. Add Binary
+415. Add Strings
+989. Add to Array-Form of Integer
+
+
+*/
+
+
+
+
+
+
+/* FIRST ATTEMPT, without fully understanding the purpsoe of this exercise. */
+// THIS IS A FAILED EFFORT, but it's what got me to understand what we're being tested on.
+// FAILED For input string: "16000000000000000000"
+
+// After having attempted with this solution, I have come to realize
+// exactly what we're being teste on. We're basically writing the method
+// that BigInteger uses to do these calculations on massive numbers that
+// exceed Long.MaxValue() - which is why the below won't work:
+
+// We're not allowed BigInteger
+// And we're not allowed to just intify the whole string
+// This leads me to believe we're being tested on our
+// ability to iterate through each string, and show
+// each step of multiplication, carrying and adding
+class Solution {
+    public String multiply(String num1, String num2) {
+        long val = 0;
+        int place = 0;
+        for(int i = num1.length()-1; i>=0; i--){
+            val+=digit_times(num1.charAt(i), place, num2);
+            place++;
+        }
+        return val+"";
+    }
+
+    private long digit_times(char num1_digit, int place1, String num2){
+        long val = 0;
+        int place2 = 0;
+        int digit_1 = (int)num1_digit-'0';
+        for (int i = num2.length()-1;  i>=0; i--){
+            int digit_2 = num2.charAt(i)-'0';
+            val += Long.valueOf((digit_1*digit_2)+"0".repeat(place1)+"0".repeat(place2));
+            place2 ++;
+        }
+        return val;
+    }
+}
+
+
+
+JAVA REVISED, Slow, and expensive. 676ms, 44.5MB
+
+class Solution {
+    public String multiply(String num1, String num2) {
+        String val = "0";
+        int num_zeros = 0;
+        for(int i = num1.length()-1; i>=0; i--){
+            char n1 = num1.charAt(i);
+            if(n1 == '0'){num_zeros++;continue;}
+            val= add_string_nums(val, digit_times(n1, num_zeros, num2));
+            num_zeros++;
+        }
+        return val+"";
+    }
+
+    private String digit_times(char num1_digit, int num_zeros1, String num2){
+        String val = "0";
+        int num_zeros2 = 0;
+        int digit_1 = (short)num1_digit-'0';
+        if(digit_1==0) return "0";
+        for (int i = num2.length()-1;  i>=0; i--){
+            int digit_2 = num2.charAt(i)-'0';
+            if(digit_2 == 0){num_zeros2++;continue;}
+            val = add_string_nums(val, (digit_1*digit_2)+"0".repeat(num_zeros1)+"0".repeat(num_zeros2));
+            num_zeros2 ++;
+        }
+        return val;
+    }
+
+    private String add_string_nums(String num1, String num2){
+        int digit_1 = 0, digit_2 = 0, carry = 0, place = 0;
+        num1 = (new StringBuilder(num1)).reverse().toString();
+        num2 = (new StringBuilder(num2)).reverse().toString();
+        StringBuilder nums = new StringBuilder();
+        for (int i = 0; i< Math.max(num1.length(), num2.length()) || carry > 0; i++){ 
+            digit_1 = i<num1.length()?(int)num1.charAt(i)-'0':0;
+            digit_2 = i<num2.length()?(int)num2.charAt(i)-'0':0;
+            int sum = digit_1 + digit_2 + carry;
+            carry = sum/10;
+            sum = sum%10;
+            nums.append(""+sum);
+        }
+        return nums.reverse().toString();  
+    }
+}
+
+
+
+
+
+
+
+
+Java, LeetCode Accepted Answer #1: 21ms, 44.1MB
+
+ELEMENTARY MATH:
+
+class Solution {
+    // Calculate the sum of all of the results from multiplyOneDigit.
+    private StringBuilder sumResults(ArrayList<ArrayList<Integer>> results) {
+        // Initialize answer as a number from results.
+        ArrayList<Integer> answer = new ArrayList<>(results.get(results.size() - 1));
+        ArrayList<Integer> newAnswer = new ArrayList<>();
+        
+        // Sum each digit from answer and result
+        for (int j = 0; j < results.size() - 1; ++j) {
+            ArrayList<Integer> result = new ArrayList<>(results.get(j));
+            newAnswer = new ArrayList<>();
+            
+            int carry = 0;
+            
+            for (int i = 0; i < answer.size() || i < result.size(); ++i) {
+                // If answer is shorter than result or vice versa, use 0 as the current digit.
+                int digit1 = i < result.size() ? result.get(i) : 0;
+                int digit2 = i < answer.size() ? answer.get(i) : 0;
+                // Add current digits of both numbers.
+                int sum = digit1 + digit2 + carry;
+                // Set carry equal to the tens place digit of sum.
+                carry = sum / 10;
+                // Append the ones place digit of sum to answer.
+                newAnswer.add(sum % 10);
+            }
+
+            if (carry != 0) {
+                newAnswer.add(carry);
+            }
+            answer = newAnswer;
+        }
+        
+        // Convert answer to a string.
+        StringBuilder finalAnswer = new StringBuilder(); 
+        for (int digit : answer) {
+            finalAnswer.append(digit);
+        }
+        return finalAnswer;
+    }
+    
+    // Multiply the current digit of secondNumber with firstNumber.
+    ArrayList<Integer> multiplyOneDigit(StringBuilder firstNumber, char secondNumberDigit, int numZeros) {
+        // Insert zeros at the beginning based on the current digit's place.
+        ArrayList<Integer> currentResult = new ArrayList<>();
+        for (int i = 0; i < numZeros; ++i) {
+            currentResult.add(0);
+        }
+        
+        int carry = 0;
+
+        // Multiply firstNumber with the current digit of secondNumber.
+        for (int i = 0; i < firstNumber.length(); ++i) {
+            char firstNumberDigit = firstNumber.charAt(i);
+            int multiplication = (secondNumberDigit - '0') * (firstNumberDigit - '0') + carry;
+            // Set carry equal to the tens place digit of multiplication.
+            carry = multiplication / 10;
+            // Append last digit to the current result.
+            currentResult.add(multiplication % 10);
+        }
+
+        if (carry != 0) {
+            currentResult.add(carry);
+        }
+        return currentResult;
+    }
+    
+    public String multiply(String num1, String num2) {
+        if (num1.equals("0") || num2.equals("0")) {
+            return "0";
+        }
+        
+        StringBuilder firstNumber = new StringBuilder(num1);
+        StringBuilder secondNumber = new StringBuilder(num2);
+        
+        // Reverse both the numbers.
+        firstNumber.reverse();
+        secondNumber.reverse();
+        
+        // For each digit in secondNumber, multipy the digit by firstNumber and
+        // store the multiplication result (reversed) in results.
+        ArrayList<ArrayList<Integer>> results = new ArrayList<>();
+        for (int i = 0; i < secondNumber.length(); ++i) {
+            results.add(multiplyOneDigit(firstNumber, secondNumber.charAt(i), i));
+        }
+        
+        // Add all the results in the results array, and store the sum in the answer string.
+        StringBuilder answer = sumResults(results);
+        
+        // answer is reversed, so reverse it to get the final answer.
+        answer.reverse();
+        return answer.toString();
+    }
+}
+
+
+
+Java 
+Approach 2: Elementary math using less intermediate space
+
+
+class Solution {
+    // Function to add two strings.
+    private ArrayList<Integer> addStrings(ArrayList<Integer> num1, ArrayList<Integer> num2) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        int carry = 0;
+        
+        for (int i = 0; i < num1.size() || i < num2.size(); ++i) {
+            // If num2 is shorter than num1 or vice versa, use 0 as the current digit.
+            int digit1 = i < num1.size() ? num1.get(i) : 0;
+            int digit2 = i < num2.size() ? num2.get(i) : 0;
+            
+            // Add current digits of both numbers.
+            int sum = digit1 + digit2 + carry;
+            // Set carry equal to the tens place digit of sum.
+            carry = sum / 10;
+            // Append the ones place digit of sum to answer.
+            ans.add(sum % 10);
+        }
+        
+        if (carry != 0) {
+            ans.add(carry);
+        }
+        return ans;
+    }
+    
+    // Multiply the current digit of secondNumber with firstNumber.
+    ArrayList<Integer> multiplyOneDigit(StringBuilder firstNumber, char secondNumberDigit, int numZeros) {
+        // Insert zeros at the beginning based on the current digit's place.
+        ArrayList<Integer> currentResult = new ArrayList<>();
+        for (int i = 0; i < numZeros; ++i) {
+            currentResult.add(0);
+        }
+        
+        int carry = 0;
+
+        // Multiply firstNumber with the current digit of secondNumber.
+        for (int i = 0; i < firstNumber.length(); ++i) {
+            char firstNumberDigit = firstNumber.charAt(i);
+            int multiplication = (secondNumberDigit - '0') * (firstNumberDigit - '0') + carry;
+            // Set carry equal to the tens place digit of multiplication.
+            carry = multiplication / 10;
+            // Append last digit to the current result.
+            currentResult.add(multiplication % 10);
+        }
+
+        if (carry != 0) {
+            currentResult.add(carry);
+        }
+        return currentResult;
+    }
+    
+    public String multiply(String num1, String num2) {
+        if (num1.equals("0") || num2.equals("0")) {
+            return "0";
+        }
+        
+        StringBuilder firstNumber = new StringBuilder(num1);
+        StringBuilder secondNumber = new StringBuilder(num2);
+        
+        // Reverse both the numbers.
+        firstNumber.reverse();
+        secondNumber.reverse();
+        
+        // To store the multiplication result of each digit of secondNumber with firstNumber.
+        int N = firstNumber.length() + secondNumber.length();
+        ArrayList<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < N; ++i) {
+            ans.add(0);
+        }
+        
+        // For each digit in secondNumber, multipy the digit by firstNumber and
+        // add the multiplication result to ans.
+        for (int i = 0; i < secondNumber.length(); ++i) {
+            // Add the current result to final ans.
+            ans = addStrings(multiplyOneDigit(firstNumber, secondNumber.charAt(i), i), ans);
+        }
+        
+        // Pop excess 0 from the rear of ans.
+        if (ans.get(ans.size() - 1) == 0) {
+            ans.remove(ans.size() - 1);
+        }
+        
+        // Ans is in the reversed order.
+        // Copy it in reverse order to get the final ans.
+        StringBuilder answer = new StringBuilder();
+        
+        for (int i = ans.size() - 1; i >= 0; --i) {
+            answer.append(ans.get(i));
+        }
+        
+        return answer.toString();
+    }
+}
+
+
+
+
+
+
+Java Other Person's submission: 4ms, 42MB
+
+This sophisticated answer takes advantage of some subtleties.
+
+1) The answer of multiplying two positive integers will have a length equal to or 
+   less than the addition of the length of each of those numbers. 
+   This allows us to store the values of multiplication in a singular int[]
+
+2) The answer, having been gathered in reverse order, may have leading 0s.
+	Appending 0's to StringBuilder only if the StringBuilder is not empty
+	effectively trims leading 0's and reverses the order of the digits
+	to be correctly displayed in StringBuilder.toString().
+
+class Solution {
+    public String multiply(String num1, String num2) {
+        int m = num1.length(), n = num2.length();
+        int[] pos = new int[m + n];  
+    
+        for(int i = m - 1; i >= 0; i--) {
+            for(int j = n - 1; j >= 0; j--) {
+                int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0'); 
+                int p1 = i + j, p2 = i + j + 1;
+                int sum = mul + pos[p2];
+
+                pos[p1] += sum / 10;
+                pos[p2] = (sum) % 10;
+            }
+        }  
+        
+        StringBuilder sb = new StringBuilder();
+        for(int p : pos) if(!(sb.length() == 0 && p == 0)) sb.append(p);
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+}
+
+
+
+
+
+
+
+

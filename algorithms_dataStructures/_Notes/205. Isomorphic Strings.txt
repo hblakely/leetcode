@@ -1,0 +1,242 @@
+Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+
+Java Solution:
+
+My JAVA
+
+import java.util.HashMap;
+
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        Map<Character,Character> sMap = new HashMap<>();
+        Map<Character, Character> tMap = new HashMap<>();
+
+        for (int i = 0; i<s.length(); i++){
+            Character cS = s.charAt(i);
+            Character cT = t.charAt(i);
+            if(!sMap.containsKey(cS))
+                sMap.put(cS, cT);
+            else if(sMap.get(cS)!=cT)
+                return false; // if two chars attempting to map to the same char.
+
+            if(!tMap.containsKey(cT))
+                tMap.put(cT, cS);
+            else if(tMap.get(cT)!=cS)
+                return false;  // if two chars are attempting to map to the same char. 
+        }
+        return true;
+    }
+}
+
+
+// Runtime: 3 ms, faster than 94.17% of Java online submissions for Isomorphic Strings.
+// Memory Usage: 42.1 MB, less than 95.61% of Java online submissions for Isomorphic Strings.
+// Time Complexity : O(n)
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        // Base case: for different length of two strings...
+        if(s.length() != t.length())
+            return false;
+        // Create two maps for s & t strings...
+        int[] map1 = new int[256];
+        int[] map2 = new int[256];
+        // Traverse all elements through the loop...
+        for(int idx = 0; idx < s.length(); idx++){
+            // Compare the maps, if not equal, return false...
+            if(map1[s.charAt(idx)] != map2[t.charAt(idx)])
+                return false;
+            // Insert each character if string s and t into seperate map...
+            map1[s.charAt(idx)] = idx + 1;
+            map2[t.charAt(idx)] = idx + 1;
+        }
+        return true;    // Otherwise return true...
+    }
+}
+
+
+
+
+
+C++ Solution:
+My C++
+
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        unordered_map<char, char> sMap;
+        unordered_map<char, char> tMap;
+        for(int i = 0; i<s.length(); i++){
+            char sChar = s[i];
+            char tChar = t[i];
+            if(sMap.find(sChar)==sMap.end())
+                sMap[sChar]=tChar;
+            if(tMap.find(tChar)==tMap.end())
+                tMap[tChar]=sChar;
+            if(sMap[sChar]!=tChar || tMap[tChar]!=sChar)
+                return false;
+        }
+        return true;
+    }
+};
+
+
+// Time Complexity : O(n)
+// Space Complexity : O(1)
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        // Use hashmaps to save the replacement for every character in the first string...
+        unordered_map <char , char> rep;
+        unordered_map <char , bool> used;
+        // Traverse all elements through the loop...
+        for(int idx = 0 ; idx < s.length() ; idx++) {
+            // If rep contains s[idx] as a key...
+            if(rep.count(s[idx])) {
+                // Check if the rep is same as the character in the other string...
+                // If not, the strings can’t be isomorphic. So, return false...
+                if(rep[s[idx]] != t[idx])
+                    return false;
+            }
+            // If no replacement found for first character, check if the second character has been used as the replacement for any other character in the first string...
+            else {
+                if(used[t[idx]])
+                    return false;
+                // If there exists no character whose replacement is the second character...
+                // Assign the second character as the replacement of the first character.
+                rep[s[idx]] = t[idx];
+                used[t[idx]] = true;
+            }
+        }
+        // Otherwise, the strings are not isomorphic.
+        return true;
+    }
+};
+
+
+
+
+
+
+
+Python Solution:
+
+
+MY PYTHON:
+
+class Solution(object):
+    def isIsomorphic(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        sDict = dict()
+        tDict = dict()
+
+        for i in range(0,len(s)):
+            charS = s[i]
+            charT = t[i]
+            if(sDict.get(charS) is None):
+                sDict[charS] = charT
+            elif (sDict.get(charS) != charT):
+                return False
+            if(tDict.get(charT) is None):
+                tDict[charT] = charS
+            elif (tDict.get(charT) != charS):
+                return False
+        
+        return True
+
+
+
+
+
+# Time Complexity : O(n)
+class Solution(object):
+    def isIsomorphic(self, s, t):
+        map1 = []
+        map2 = []
+        for idx in s:
+            map1.append(s.index(idx))
+        for idx in t:
+            map2.append(t.index(idx))
+        if map1 == map2:
+            return True
+        return False
+
+
+
+
+
+
+
+
+JavaScript Solution:
+
+My JavaScript:
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isIsomorphic = function(s, t) {
+    const mapS = new Map();
+    const mapT = new Map();
+    for(let i = 0; i< s.length; i++){
+        let charS = s[i];
+        let charT = t[i];
+        if(mapS[charS] == null)
+            mapS[charS]= charT;
+        if(mapT[charT] == null)
+            mapT[charT] = charS;
+
+        if(mapS[charS]!= charT || mapT[charT] != charS)
+            return false;
+    }
+    return true;
+};
+
+
+// Runtime: 83 ms, faster than 88.18% of JavaScript online submissions for Isomorphic Strings.
+// Time Complexity : O(n)
+var isIsomorphic = function(s, t) {
+    // Base case: for different length of two strings...
+    if(s.length != t.length)
+        return false;
+    // Create two maps for s & t strings...
+    const map1 = [256];
+    const map2 = [256];
+    // Traverse all elements through the loop...
+    for(let idx = 0; idx < s.length; idx++){
+        // Compare the maps, if not equal, return false...
+        if(map1[s.charAt(idx)] != map2[t.charAt(idx)])
+            return false;
+        // Insert each character if string s and t into seperate map...
+        map1[s.charAt(idx)] = idx + 1;
+        map2[t.charAt(idx)] = idx + 1;
+    }
+    return true;    // Otherwise return true...
+};
+
+Python3 Solution:
+return [*map(s.index, s)] == [*map(t.index, t)]
+
+
+
+[*map(s.index, s)] is a list comprehension expression that maps the index values of each character in a string s to a new list.
+
+Here's how it works step by step:
+
+map(s.index, s) creates a new iterator that applies the index method to each character in the string s. The index method returns the index of the first occurrence of the given character in the string. For example, if s = "hello", then map(s.index, s) would produce an iterator that generates the values [0, 1, 2, 2, 4], corresponding to the indices of the characters 'h', 'e', 'l', 'l', and 'o' in the string.
+
+The list comprehension expression [*map(s.index, s)] wraps the iterator produced in step 1 in a list and unpacks the resulting list into a new list. This creates a new list that contains the index values of each character in the original string s.
+
+The [*map(s.index, s)] expression is equivalent to writing list(map(s.index, s)), but the former syntax is a shorthand that was introduced in Python 3.5. The [*expression] syntax is called "list unpacking", and it allows you to quickly convert an iterable object into a list.
+
+class Solution:
+    def isIsomorphic(self, s: str, t: str) -> bool:
+        return [*map(s.index, s)] == [*map(t.index, t)]
+
+

@@ -1,0 +1,219 @@
+234. Palindrome Linked List
+
+Given the head of a singly linked list, return true if it is a 
+palindrome
+ or false otherwise.
+
+Example 1:
+
+
+Input: head = [1,2,2,1]
+Output: true
+Example 2:
+
+
+Input: head = [1,2]
+Output: false
+ 
+
+Constraints:
+
+The number of nodes in the list is in the range [1, 105].
+0 <= Node.val <= 9
+ 
+
+Follow up: Could you do it in O(n) time and O(1) space?
+
+
+Java First Attempt Two Pointers + Stack, 2-Pass: 30ms, 56.1MB
+
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        ListNode first = head;
+        ListNode second = head;
+        Stack<Integer> nums = new Stack<>();
+        while(first != null){
+            nums.add(first.val);
+            first = first.next;
+        }    
+        for(int i = 0; i<nums.size(); i++){
+            if(second.val!=nums.pop())
+                return false;
+            second = second.next;
+        }
+        return true;
+    }
+}
+
+
+Java Two Pointer + List, 2-Pass: 12ms, 60.1MB
+
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        List<Integer> vals = new ArrayList<>();
+
+        // Convert LinkedList into ArrayList.
+        ListNode currentNode = head;
+        while (currentNode != null) {
+            vals.add(currentNode.val);
+            currentNode = currentNode.next;
+        }
+
+        // Use two-pointer technique to check for palindrome.
+        int front = 0;
+        int back = vals.size() - 1;
+        while (front < back) {
+            // Note that we must use ! .equals instead of !=
+            // because we are comparing Integer, not int.
+            if (!vals.get(front).equals(vals.get(back))) {
+                return false;
+            }
+            front++;
+            back--;
+        }
+        return true;
+    }
+}
+
+
+
+
+Java Recursion: 18ms, 62.8MB
+
+# frontPointer gets Updated Only after we hit end of list recursively.
+# This allows us to compare end to beginning of the list.
+# We use front pointer as our "Memo"
+
+class Solution {
+
+    private ListNode frontPointer;
+
+    private boolean recursivelyCheck(ListNode currentNode) {
+        if (currentNode != null) {
+            if (!recursivelyCheck(currentNode.next)) return false;
+            if (currentNode.val != frontPointer.val) return false;
+            frontPointer = frontPointer.next; 
+        }
+        return true;
+    }
+
+    public boolean isPalindrome(ListNode head) {
+        frontPointer = head;
+        return recursivelyCheck(head);
+    }
+}
+
+
+
+Java Reverse Second Half In-Place: 5ms, 55.7MB
+TWo Pointers
+
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+
+        if (head == null) return true;
+
+        // Find the end of first half and reverse second half.
+        ListNode firstHalfEnd = endOfFirstHalf(head);
+        ListNode secondHalfStart = reverseList(firstHalfEnd.next);
+
+        // Check whether or not there is a palindrome.
+        ListNode p1 = head;
+        ListNode p2 = secondHalfStart;
+        boolean result = true;
+        while (result && p2 != null) {
+            if (p1.val != p2.val) result = false;
+            p1 = p1.next;
+            p2 = p2.next;
+        }        
+
+        // Restore the list and return the result.
+        firstHalfEnd.next = reverseList(secondHalfStart);
+        return result;
+    }
+
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        return prev;
+    }
+
+    private ListNode endOfFirstHalf(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+}
+
+
+
+
+
+ 
+Java Someone Else's Solution: 2ms, 56MB
+I'm not sure why this solution is consistently faster than
+the above solution. I had even tried commenting out the unecessary
+restoration of list-order in the above code to hopefully speed it up
+to match the below's speed. Never happened. Above code hits 5ms 
+consistently even with minor tweaks, and  below code hits 2ms
+consistently - AND it was even calculating mid-point incorrectly 
+at first. I changed the below to make fast = fast.next.next, because
+it was at first making fast = fast.next which loops through the entire
+list. AND SOMEHOW IT HASN'T CHANGED SPEED!? IT was 2ms even calculated
+incorrectly, and it's still 2ms calculated correctly. IDK what to say.
+
+
+class Solution {
+    public ListNode reverse(ListNode head)
+    {
+        ListNode current=head,pre=null;
+        while(current!=null)
+        {
+            ListNode r=current.next;
+            current.next=pre;
+            pre=current;
+            current=r;
+        }
+        return pre;
+    }
+    public ListNode mid(ListNode head)
+    {
+        ListNode slow=head,fast=head;
+        if(fast.next!=null && fast.next.next!=null)
+        {
+            slow=slow.next;
+            fast=fast.next.next;
+        }
+        return slow;
+    }
+    public boolean isPalindrome(ListNode head) {
+    if(head==null || head.next==null)
+    {
+        return true;
+    }
+    ListNode midone=mid(head);
+    ListNode last=reverse(midone.next);
+    ListNode first=head;
+    while(last!=null && first!=null)
+    {
+        if(first.val!=last.val)
+        {
+            return false;
+        }
+        first=first.next;
+        last=last.next;
+    }
+    return true;
+        
+    }
+}

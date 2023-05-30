@@ -1,0 +1,99 @@
+438. Find All Anagrams in a String
+
+Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+ 
+
+Example 1:
+
+Input: s = "cbaebabacd", p = "abc"
+Output: [0,6]
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+Example 2:
+
+Input: s = "abab", p = "ab"
+Output: [0,1,2]
+Explanation:
+The substring with start index = 0 is "ab", which is an anagram of "ab".
+The substring with start index = 1 is "ba", which is an anagram of "ab".
+The substring with start index = 2 is "ab", which is an anagram of "ab".
+ 
+
+Constraints:
+
+1 <= s.length, p.length <= 3 * 104
+s and p consist of lowercase English letters.
+
+
+JAVA Iterative Sliding Window int[]: 16 ms, 43.7 MB
+
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        // Constraints: s and p are both not empty, no need to empty check.
+        // s and p both consist of only lowercase english letters.
+        // no need to validate characters.
+        // length of s and p are variable, so p may be larger than s. 
+        List<Integer> anagramIndexes = new ArrayList<>();
+        if(p.length()>s.length())   // no anagram found.
+            return anagramIndexes;          
+
+        // if all chars in p exist in window, add index to startIndexes
+        // compare chars in p to chars in window. 
+        // Could use HashMap, or int[], or sort an array of chars.
+        int[] p_map = new int['z'-'a'+1]; 
+        int[] window_map = new int['z'-'a'+1]; 
+        for(int i = 0; i<s.length(); i++){  // initialize window with same number of chars in p.
+            window_map[s.charAt(i)-'a']++;  // Append current char in s to our window
+            if(i<p.length())                // Build p_map
+                p_map[p.charAt(i)-'a']++;
+            
+            if(i>=p.length()-1){ // p-map is built, now time to operate.
+                if(i>=p.length())
+                    window_map[s.charAt(i-p.length())-'a']--; // remove from beginning of our window
+                if(Arrays.equals(window_map,p_map))
+                    anagramIndexes.add(i-(p.length()-1));
+            }
+        }
+        return anagramIndexes; 
+    }
+}
+
+
+PYTHON Iterative sliding window + Dictionary: 84 ms, 14.6 MB
+
+class Solution(object):
+    def findAnagrams(self, s, p):
+        pLen, sLen, indexes = len(p),len(s), []
+        
+        if pLen > sLen:
+            return indexes
+
+        pDic, sDic = {},{}
+
+        for c in p:
+            pDic[c] = pDic.get(c, 0) + 1
+        
+        for i in range(sLen):
+            c = s[i]
+            if c in sDic:
+                sDic[c] += 1
+            else:
+                sDic[c] = 1
+            
+            if i >= pLen:
+                c2 = s[i - pLen]
+                if sDic[c2] == 1:
+                    del sDic[c2]
+                else:
+                    sDic[c2] -= 1
+            
+            if sDic == pDic:
+                indexes.append(i - pLen + 1)
+                
+        return indexes
+
+
