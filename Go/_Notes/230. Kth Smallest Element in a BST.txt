@@ -1,0 +1,132 @@
+230. Kth Smallest Element in a BST
+
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+ 
+Example 1:
+
+
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+Example 2:
+
+
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+ 
+
+Constraints:
+
+The number of nodes in the tree is n.
+1 <= k <= n <= 104
+0 <= Node.val <= 104
+ 
+
+Follow up: If the BST is modified often (i.e., we can do insert and delete operations) and you need to find the kth smallest frequently, how would you optimize?
+
+----------------------------------------------------------------
+// Iterative Traversal stops after K  
+
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func kthSmallest(root *TreeNode, k int) int {
+    nums := []*TreeNode{}
+    for {
+        for root!= nil{ // Left until you can't left any more ;)
+            nums=append(nums,root)
+            root = root.Left
+        } 
+        // root = nodeStack.pop (last node visited)
+        root = nums[len(nums)-1] 
+        nums = nums[:len(nums)-1]
+
+        // decrement counter
+        k--		
+
+        // if k is 0, we've fount our value				
+        if(k==0){return root.Val} 
+
+        // No more lefts, and not done... go right.
+        root = root.Right
+    }
+}
+
+
+
+// Recursive InOrder Traversal, traverses whole Tree
+
+func kthSmallest(root *TreeNode, k int) int {
+    nums := inOrder(root, make([]int, 0))
+    return nums[k-1]
+}
+
+func inOrder(root *TreeNode, arr []int) []int {
+    if root == nil {
+        return arr
+    }
+    // InOrder left -> middle -> right
+    arr = inOrder(root.Left, arr)   // Left until can't
+    arr = append(arr, root.Val)     // Then Middle
+    arr = inOrder(root.Right, arr)  // Then right
+    return arr
+}
+
+
+
+
+Follow up
+What if the BST is modified (insert/delete operations)
+often and you need to find the kth smallest frequently?
+How would you optimize the kthSmallest routine?
+
+Click here to learn how to insert a node into a BST
+and delete a node from a BST,
+the time complexity of these
+operations is O(H)O(H)O(H), where HHH is a height of the binary tree.
+H=log⁡NH = \log NH=logN for the balanced tree and H=NH = NH=N for a skewed tree.
+
+Hence without any optimisation insert/delete + search of kth element has
+O(2H+k)O(2H + k)O(2H+k) complexity.
+How to optimise that?
+
+That's a design question,
+basically we're asked to implement a structure
+which contains a BST inside and
+optimises the following operations :
+
+Insert
+
+Delete
+
+Find kth smallest
+
+Seems like a database description, isn't it?
+Let's use here the same logic as for LRU cache
+design, and combine an indexing structure (we could keep BST here)
+with a double linked list.
+
+Such a structure would provide:
+
+O(H)O(H)O(H) time for the insert and delete.
+
+O(k)O(k)O(k) for the search of kth smallest.
+
+bla
+
+The overall time complexity for insert/delete + search of kth smallest
+is O(H+k)O(H + k)O(H+k) instead of O(2H+k)O(2H + k)O(2H+k).
+
+Complexity Analysis
+
+Time complexity for insert/delete + search of kth smallest:
+O(H+k)O(H + k)O(H+k), where HHH is a tree height.
+O(log⁡N+k)O(\log N + k)O(logN+k) in the average case,
+O(N+k)O(N + k)O(N+k) in the worst case.
+
+Space complexity : O(N)O(N)O(N) to keep the linked list.
