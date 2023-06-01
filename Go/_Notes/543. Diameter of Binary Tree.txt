@@ -1,0 +1,62 @@
+543. Diameter of Binary Tree
+
+Given the root of a binary tree, return the length of the diameter of the tree.
+
+The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+
+The length of a path between two nodes is represented by the number of edges between them.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,2,3,4,5]
+Output: 3
+Explanation: 3 is the length of the path [4,2,1,3] or [5,2,1,3].
+Example 2:
+
+Input: root = [1,2]
+Output: 1
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 104].
+-100 <= Node.val <= 100
+
+----------------------------------------------
+
+
+
+Go, Recursion, Depth First + Memo: 4 to 8ms, 4.5MB
+
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func diameterOfBinaryTree(root *TreeNode) int {
+	max := 0
+	recursiveHelper(root, &max) // pass max by reference
+	return max
+}
+
+func recursiveHelper(root *TreeNode, max *int) int {
+	if root == nil {return 0} // Reached the bottom
+
+	// find longest path of left and right child
+	leftDepth := recursiveHelper(root.Left, max) 
+	rightDepth := recursiveHelper(root.Right, max) 
+
+	// Update max-Memo with longest of max or Left+Right
+	*max = int(math.Max(float64(*max), float64(leftDepth+rightDepth)))
+
+	// Return longest between left and right
+	return int(math.Max(float64(leftDepth), float64(rightDepth))) +1
+}
+

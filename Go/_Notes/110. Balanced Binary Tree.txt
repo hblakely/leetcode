@@ -1,0 +1,111 @@
+110. Balanced Binary Tree
+
+Given a binary tree, determine if it is 
+height-balanced
+.
+
+Example 1:
+
+
+Input: root = [3,9,20,null,null,15,7]
+Output: true
+Example 2:
+
+
+Input: root = [1,2,2,3,3,null,null,4,4]
+Output: false
+Example 3:
+
+Input: root = []
+Output: true
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [0, 5000].
+-104 <= Node.val <= 104
+----------------------------------------
+
+
+Go Top-Down Recursion (redundant computation): 3ms, 5.9MB
+
+func isBalanced(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+
+	leftDepth := getDepth(root.Left)
+	rightDepth := getDepth(root.Right)
+
+	return math.Abs(float64(leftDepth-rightDepth)) <= 1 && 
+		isBalanced(root.Left) && isBalanced(root.Right)
+}
+
+func getDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	return int(math.Max(float64(getDepth(root.Left)), 
+		float64(getDepth(root.Right)))) + 1
+}
+
+
+
+
+
+Go Bottom-Up Recursion (avoid redundant calculations): 0msl 5.9MB
+
+
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+type TreeInfo struct {
+	Height   int
+	Balanced bool
+}
+
+func isBalancedTreeHelper(root *TreeNode) TreeInfo {
+	if root == nil {
+		return TreeInfo{-1, true}
+	}
+
+	left := isBalancedTreeHelper(root.Left)
+	if !left.Balanced {
+		return TreeInfo{-1, false}
+	}
+
+	right := isBalancedTreeHelper(root.Right)
+	if !right.Balanced {
+		return TreeInfo{-1, false}
+	}
+
+	if math.Abs(float64(left.Height-right.Height)) < 2 {
+		return TreeInfo{int(math.Max(float64(left.Height), float64(right.Height))) + 1, true}
+	}
+	return TreeInfo{-1, false}
+}
+
+func isBalanced(root *TreeNode) bool {
+	return isBalancedTreeHelper(root).Balanced
+}
+
+func main() {
+	// Example usage
+	root := &TreeNode{Val: 3}
+	root.Left = &TreeNode{Val: 9}
+	root.Right = &TreeNode{Val: 20}
+	root.Right.Left = &TreeNode{Val: 15}
+	root.Right.Right = &TreeNode{Val: 7}
+
+	fmt.Println(isBalanced(root)) // Output: true
+}
