@@ -1,0 +1,222 @@
+994. Rotting Oranges
+
+You are given an m x n grid where each cell can have one of three values:
+
+0 representing an empty cell,
+1 representing a fresh orange, or
+2 representing a rotten orange.
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+
+Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+
+ 
+Example 1:
+
+
+Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
+Example 2:
+
+Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
+Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+Example 3:
+
+Input: grid = [[0,2]]
+Output: 0
+Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
+ 
+
+Constraints:
+
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 10
+grid[i][j] is 0, 1, or 2.
+
+----------------------------------------------------
+// Iterative DFS Queue, 2 passes: 0-6ms, 3MB (usually 3ms)
+
+func orangesRotting(grid [][]int) int {
+    
+    // map island
+    // find rotten(s)
+    
+    // if island with no rotten, return -1 
+
+    // gather time for each island with rotten
+    // shortest path from rotten to furthest clean
+
+    // return max time of all islands
+
+    queue := [][]int{}
+    rows := len(grid)
+    cols := len(grid[0])
+    fresh:=0
+    minutes:=-1
+    // DFS find rotten locations, count fresh
+    for c:=0; c<cols; c++{
+        for r:=0; r<rows; r++{
+            if grid[r][c] == 1{
+                fresh++
+            }else if grid[r][c] == 2{queue=append(queue,[]int{r,c})}
+        }
+    }
+    if fresh == 0 && len(queue)>0 {return 0} // nothing to rot
+    if fresh > 0 && len(queue)==0 {return -1}
+    queue = append(queue, []int{-1,-1}) // Ticker to count minutes
+    directions := [][]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+    // DFS rot oranges, count minutes
+    for len(queue)>0{
+        // poll from queue
+        r,c := queue[0][0], queue[0][1]
+        queue = queue[1:]
+        if r == -1 {
+            // Finish round of processing
+            minutes++
+            if len(queue)>0 {queue=append(queue,[]int{-1,-1})}
+        } else{
+            // This is a rotten organge
+            // Contaminate:
+            for _, d := range directions{
+                neighborRow := r+d[0]
+                neighborCol := c+d[1]
+                if inBounds(neighborRow, neighborCol, rows, cols){
+                    if grid[neighborRow][neighborCol] == 1 {
+                        // fresh orange must be contaminated
+                        grid[neighborRow][neighborCol] = 2 // contaminated
+                        fresh--
+                        queue=append(queue, []int{neighborRow, neighborCol})
+                    }
+                }
+            }
+        }
+    }
+    if fresh > 0 {return -1} // island of no rotten left
+    return minutes 
+}
+
+func inBounds(r int, c int, rows int, cols int) bool {
+    return r>=0 && r<rows && c >=0 && c<cols
+}
+
+
+
+
+
+
+
+
+// BFS Iterative Queue 3-6ms, 3.1MB (usually 3ms)
+
+
+func OrangesRotting(grid [][]int) int {
+    queue := [][]int{}
+    rows := len(grid)
+    cols := len(grid[0])
+    fresh := 0
+    minutes := -1
+    // BFS find rotten locations, count fresh
+    for r := 0; r < rows; r++ {
+        for c := 0; c < cols; c++ {
+            if grid[r][c] == 1 {
+                fresh++
+            } else if grid[r][c] == 2 {
+                queue = append(queue, []int{r, c})
+            }
+        }
+    }
+    if fresh == 0 && len(queue) > 0 {
+        return 0
+    } // nothing to rot
+    if fresh > 0 && len(queue) == 0 {
+        return -1
+    }
+    queue = append(queue, []int{-1, -1}) // Ticker to count minutes
+    directions := [][]int{{0, 1}, {1, 0}, {-1, 0}, {0, -1}}
+    // BFS rot oranges, count minutes
+    for len(queue) > 0 {
+        // poll from queue
+        r, c := queue[0][0], queue[0][1]
+        queue = queue[1:]
+        if r == -1 {
+            // Finish round of processing
+            minutes++
+            if len(queue) > 0 {
+                queue = append(queue, []int{-1, -1})
+            }
+        } else {
+            // This is a rotten organge
+            // Contaminate:
+            for _, d := range directions {
+                nr := r + d[0]
+                nc := c + d[1]
+                if nr >= 0 && nr < rows && nc >= 0 && nc < cols { // in bounds
+                    if grid[nr][nc] == 1 {
+                        // fresh orange must be contaminated
+                        grid[nr][nc] = 2 // contaminated
+                        fresh--
+                        queue = append(queue, []int{nr, nc})
+                    }
+                }
+            }
+        }
+
+    }
+    if fresh > 0 {
+        return -1
+    } // island of no rotten left
+    return minutes
+}
+
+
+
+
+
+------------
+
+In place is currently failing:
+
+func orangesRotting(grid [][]int) int {
+    minutes, ROWS, COLS := 2,len(grid),len(grid[0])
+    
+    keep_going := true
+    for keep_going{
+        keep_going=rot(minutes, grid, ROWS, COLS)
+        minutes++
+    }
+
+    for r:=0; r<ROWS; r++{
+        for c:=0; c<COLS; c++{
+            if grid[r][c] == 1{return -1} // still fresh
+        }
+    }
+    return minutes-2
+}
+
+func rot(timestamp int, grid [][]int, ROWS int, COLS int) bool{
+    directions := [][]int{{-1,0},{0,1},{1,0},{0,-1}}
+    toBeContinued := false
+    for r:=0; r<ROWS; r++{
+        for c:=0; c<COLS; c++{
+            if grid[r][c] == timestamp{
+                // current contaminated cell
+                for _, d := range directions{
+                    // neighbor location
+                    nr,nc:=d[0],d[1]
+                    // in bounds
+                    if nr>=0 && nr<ROWS && nc>=0 && nc<COLS{
+                        // fresh to be conaminated next
+                        if grid[nr][nc] ==1{
+                            grid[nr][nc]=timestamp+1
+                            toBeContinued = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return toBeContinued
+}
+
+
